@@ -1,0 +1,20 @@
+{
+  "name": "ecommerce-cicd-demo",
+  "version": "1.0.0",
+  "description": "A basic e-commerce app used to demo a GitHub Actions + Docker + DockerHub + EC2 CI/CD pipeline",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "ejs": "^3.1.10"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

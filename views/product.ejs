@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= product.name %> — ShopStream</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="navbar">
+    <a class="logo" href="/">🛍️ ShopStream</a>
+    <div class="badge">Deployed via CI/CD</div>
+  </header>
+
+  <main class="product-detail">
+    <div class="product-emoji-big"><%= product.emoji %></div>
+    <div class="product-info">
+      <h1><%= product.name %></h1>
+      <p class="category"><%= product.category %></p>
+      <p class="price-big">$<%= product.price.toFixed(2) %></p>
+      <p class="stock"><%= product.stock %> units in stock</p>
+      <button class="buy-btn" disabled>Add to Cart (demo only)</button>
+      <a class="back-link" href="/">&larr; Back to all products</a>
+    </div>
+  </main>
+</body>
+</html>

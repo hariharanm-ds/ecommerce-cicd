@@ -1,0 +1,67 @@
+name: CI/CD - Build, Push & Deploy to EC2
+
+# Runs every time you push to the main branch
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch: {}   # also lets you trigger it manually from the Actions tab
+
+jobs:
+  # ---------------------------------------------------
+  # JOB 1: Build the Docker image and push it to DockerHub
+  # ---------------------------------------------------
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/ecommerce-app:latest \
+                        -t ${{ secrets.DOCKERHUB_USERNAME }}/ecommerce-app:${{ github.run_number }} .
+
+      - name: Push Docker image to DockerHub
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/ecommerce-app:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/ecommerce-app:${{ github.run_number }}
+
+  # ---------------------------------------------------
+  # JOB 2: SSH into EC2, pull the new image, restart the container
+  # ---------------------------------------------------
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to EC2 over SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Log in to DockerHub on the EC2 box (needed if the repo is private)
+            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+            # Pull the freshly built image
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/ecommerce-app:latest
+
+            # Stop & remove the old running container (ignore errors if it's the first deploy)
+            docker stop ecommerce-app || true
+            docker rm ecommerce-app || true
+
+            # Run the new container
+            docker run -d \
+              --name ecommerce-app \
+              --restart unless-stopped \
+              -p 3000:3000 \
+              ${{ secrets.DOCKERHUB_USERNAME }}/ecommerce-app:latest
+
+            # Clean up old dangling images so disk doesn't fill up
+            docker image prune -f

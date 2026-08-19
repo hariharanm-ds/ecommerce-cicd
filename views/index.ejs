@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopStream — Demo E-Commerce App</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">🛍️ ShopStream</div>
+    <div class="badge">Deployed via CI/CD</div>
+  </header>
+
+  <section class="hero">
+    <h1>Welcome to ShopStream</h1>
+    <p>A minimal demo store used to showcase a real CI/CD pipeline: GitHub Actions → Docker → DockerHub → AWS EC2.</p>
+  </section>
+
+  <main class="grid">
+    <% products.forEach(function(product) { %>
+      <a class="card" href="/product/<%= product.id %>">
+        <div class="card-emoji"><%= product.emoji %></div>
+        <div class="card-body">
+          <h3><%= product.name %></h3>
+          <p class="category"><%= product.category %></p>
+          <p class="price">$<%= product.price.toFixed(2) %></p>
+          <p class="stock"><%= product.stock %> in stock</p>
+        </div>
+      </a>
+    <% }); %>
+  </main>
+
+  <footer>
+    <p>Built to demo: GitHub Actions + Docker + DockerHub + EC2 &nbsp;|&nbsp; <a href="/health">/health</a> &nbsp;|&nbsp; <a href="/api/products">/api/products</a></p>
+  </footer>
+</body>
+</html>
