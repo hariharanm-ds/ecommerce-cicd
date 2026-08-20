@@ -12,7 +12,7 @@ app.use(express.json());
 // ---- In-memory "database" of products ----
 const products = [
   { id: 1, name: "Wireless Headphones", price: 59.99, category: "Electronics", emoji: "🎧", stock: 24 },
-  { id: 2, name: "Smart Watch", price: 129.99, category: "Electronics", emoji: "⌚", stock: 12 },
+  { id: 2, name: "Smart Watch", price: 130, category: "Electronics", emoji: "⌚", stock: 12 },
   { id: 3, name: "Running Shoes", price: 74.5, category: "Footwear", emoji: "👟", stock: 40 },
   { id: 4, name: "Coffee Maker", price: 45.0, category: "Home", emoji: "☕", stock: 18 },
   { id: 5, name: "Backpack", price: 39.99, category: "Accessories", emoji: "🎒", stock: 30 },
